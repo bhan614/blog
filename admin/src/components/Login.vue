@@ -4,10 +4,10 @@
       <h1 class="login__title">博客后台登录</h1>
     </div>
     <div class="login__item">
-      <el-input placeholder="用户名" />
+      <el-input placeholder="用户名" v-model="username" />
     </div>
     <div class="login__item">
-      <el-input type="password" placeholder="密码" />
+      <el-input type="password" placeholder="密码" v-model="password" />
     </div>
     <div class="login__item">
       <el-button type="primary" @click="login">登录</el-button>
@@ -16,20 +16,38 @@
 </template>
 
 <script>
-  export default {
-    name: 'Login',
-    data() {
-      return {
-        username: '',
-        password: ''
+import md5 from 'md5';
+export default {
+  name: 'Login',
+  data() {
+    return {
+      username: '',
+      password: ''
+    }
+  },
+  methods: {
+    login() {
+      let info = {
+        username: this.username,
+        password: this.password
       }
-    },
-    methods: {
-      login() {
-        this.$router.push('./admin')
-      }
+      this.$store.dispatch('createToken', info).then((res) => {
+        if (res.data.success) {
+          this.$message({
+            message: '登录成功',
+            type: 'success'
+          });
+          this.$router.push('/admin');
+        } else {
+          this.$message.error(res.data.error)
+        }
+      })
+      .catch(err => {
+        this.$message.error('登录失败');
+      })
     }
   }
+}
 </script>
 
 <style lang="stylus">

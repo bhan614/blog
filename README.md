@@ -33,3 +33,10 @@ blog-admin使用vue-cli构建
 
 引入elementui
 使用方法见http://element.eleme.io/#/zh-CN/component/installation
+
+Vue-cli proxyTable
+是一个地址映射表，你可以通过设置将复杂的url简化
+可以虚拟一个服务端接收你的请求并代你发送该请求，这样就不会有跨域问题了
+
+Axios
+使用axios来发送请求，返回值是promise

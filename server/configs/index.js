@@ -1,7 +1,9 @@
-const config = {
+import privateConfig from './private.js';
+let config = {
   app: {
-    port: process.env.PORT || 3030,
+    port: process.env.PORT || 8888,
     baseApi: '/api',
+    authApi: '/auth',
   },
   mongodb: {
     url: 'mongodb://localhost:27017/vue-blog',
@@ -11,4 +13,5 @@ const config = {
     }
   }
 }
+config = Object.assign(config, privateConfig)
 module.exports = config;
