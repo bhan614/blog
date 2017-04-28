@@ -1,6 +1,6 @@
 import Axios from 'axios'
 export default {
-   createToken(username, password) {
+   createToken({ username, password }) {
     return Axios.post('/auth/token', { username, password })
   }
 }

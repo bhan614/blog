@@ -33,8 +33,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-   // console.log(store.state);
-   console.log(to)
+  //console.log(store);
+    console.log(to.meta.authPage)
    if (to.meta.authPage) { //login
      console.log("login")
      if (store.state.token.token) {

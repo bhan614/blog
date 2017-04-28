@@ -21,9 +21,8 @@ export default async(router) => {
     });
   }
   router.post('/token', async(ctx) => {
-    const res = ctx.request.body.username;
-    const username = res.username;
-    const password = res.password;
+    const username = ctx.request.body.username;
+    const password = ctx.request.body.password;
     console.log(username, password);
     let user = await User.find({username: username}).exec().catch(err => {
       console.log(err);
