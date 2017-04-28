@@ -14,7 +14,7 @@ mongoose.connection.on('error', console.error);
 
 //中间件
 app.use(middleware());
-//onerror(app);
+onerror(app);
 
 //路由
 //app.use(auth(), verify);

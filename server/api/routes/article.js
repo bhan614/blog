@@ -29,7 +29,6 @@ async function createArticle(ctx) {
     lastEditTime
   });
   const createResult = await article.save().catch(err => {
-    console.log(err);
     ctx.throw('500', '服务器内部错误')
   })
   console.log('文章创建成功');
@@ -39,6 +38,47 @@ async function createArticle(ctx) {
   }
 }
 
+async function modifyArticle(ctx) {
+  const id = ctx.params.id;
+  const article = await Article.findByIdAndUpdate(id, { $set: ctx.request.body }).catch(err => {
+    if (err.name === 'CastError') {
+      this.throw(400, 'id不存在')
+    } else {
+      this.throw(500, '服务器内部错误')
+    }
+  });
+  ctx.body = {
+    success: true
+  }
+}
+
+async function deleteArticle(ctx) {
+  const id = ctx.params.id;
+  const article = await Article.findByIdAndRemove(id).catch(err => {
+    if (err.name === "CastError") {
+      this.throw(400, 'id不存在')
+    } else {
+      this.throw(500, '服务器内部错误')
+    }
+  })
+  ctx.body = {
+    success: true
+  }
+}
+
+async function getAllArticles(ctx) {
+  const articleArr = await Article.find().catch(err => {
+    ctx.throw(500, '服务器内部错误')
+  });
+  ctx.body = {
+    success: true,
+    articleArr
+  }
+}
+
 export default async(router) => {
   router.post('/articles', verify, createArticle)
+  .get('/articles', getAllArticles)
+  .patch('/articles/:id', verify, modifyArticle)
+  .delete('/articles/:id', verify, deleteArticle)
 }
