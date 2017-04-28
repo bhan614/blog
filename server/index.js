@@ -6,8 +6,6 @@ import mongoose from 'mongoose';
 import config from './configs';
 import middleware from './middleware'
 import api from "./api";
-import auth from './auth';
-import verify from './middleware/verify.js';
 const app = new koa();
 
 //mongodb
@@ -16,10 +14,10 @@ mongoose.connection.on('error', console.error);
 
 //中间件
 app.use(middleware());
-onerror(app);
+//onerror(app);
 
 //路由
-app.use(auth(), verify);
+//app.use(auth(), verify);
 app.use(api());
 
 // 创建服务器

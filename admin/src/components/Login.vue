@@ -7,7 +7,7 @@
       <el-input placeholder="用户名" v-model="username" />
     </div>
     <div class="login__item">
-      <el-input type="password" placeholder="密码" v-model="password" />
+      <el-input type="password" placeholder="密码" v-model="password" @keyup.enter="submit" />
     </div>
     <div class="login__item">
       <el-button type="primary" @click="login">登录</el-button>
@@ -43,7 +43,7 @@ export default {
         }
       })
       .catch(err => {
-        this.$message.error('登录失败');
+        this.$message.error('err.response.data');
       })
     }
   }
