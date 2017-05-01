@@ -34,12 +34,24 @@ async function createArticle(ctx) {
   console.log('文章创建成功');
   ctx.body = {
     success: true,
-    id: createResult._id
+    article: createResult
   }
 }
 
 async function modifyArticle(ctx) {
   const id = ctx.params.id;
+  const title = ctx.request.body.title;
+  const content = ctx.request.body.content;
+  const abstract = ctx.request.body.abstract;
+  if (title == "") {
+    ctx.throw(400, '标题不能为空')
+  }
+  if (content == "") {
+    ctx.throw(400, '内容不能为空')
+  }
+  if (abstract == "") {
+    ctx.throw(400, '摘要不能为空')
+  }
   const article = await Article.findByIdAndUpdate(id, { $set: ctx.request.body }).catch(err => {
     if (err.name === 'CastError') {
       this.throw(400, 'id不存在')

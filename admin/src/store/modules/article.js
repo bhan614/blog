@@ -7,14 +7,16 @@ const state = {
     _id: -1,
     index: -1,
     title: '',
-    content: '',
+    content: '<!--more-->',
     save: true,
     publish: false
   }
 }
 
 const getters = {
-  articleList: state => state.articleList,
+  articleList: state => state.articleList.sort((a, b) => {
+    return new Date(a.createTime) - new Date(b.createTime);
+  }),
   currentArticle: state => state.currentArticle
 }
 
@@ -23,12 +25,9 @@ const actions = {
     return api.createArticle(title, content, publish).then(res => {
       if (res.data.success) {
         const article = {
-          _id: res.data.id,
-          index: 0,
-          title: title,
-          save: true,
-          publish: false
+          save: true
         }
+        Object.assign(article, res.data.article)
         commit(types.CREATE_ARTICLE, article);
       }
       return new Promise((resolve, reject) => {
@@ -37,7 +36,7 @@ const actions = {
     })
   },
   saveArticle({ commit, state }, { id, article }) {
-    return api.saveArticles(id, article).then(res => {
+    return api.saveArticle(id, article).then(res => {
       if (res.data.success) {
         commit(types.SAVE_ARTICLE, { id, article });
       }
@@ -47,7 +46,7 @@ const actions = {
     })
   },
   publishArticle({ commit, state }, { id }) {
-    return api.saveArticles(id).then(res => {
+    return api.saveArticle(id).then(res => {
       if (res.data.success) {
         commit(types.PUBLISH_ARTICLE, { id });
       }
@@ -57,7 +56,7 @@ const actions = {
     })
   },
   notPublishArticle({ commit, state }, { id }) {
-    return api.saveArticles(id).then(res => {
+    return api.saveArticle(id).then(res => {
       if (res.data.success) {
         commit(types.NOT_PUBLISH_ARTICLE, { id });
       }
@@ -81,13 +80,14 @@ const actions = {
     if (state.articleList.length == 0 || index == -1) {
       article = {
         _id: -1,
-        index: 0,
+        index: -1,
         title: "",
-        content: '',
+        content: '<!--more-->',
         save: true,
         publish: false,
       }
-    } else {
+    }  else {
+      console.log(state.articleList, index)
       article = {
         _id: state.articleList[index]._id,
         index: index,
@@ -114,9 +114,9 @@ const actions = {
             save: false,
             publish: false,
           }
-          commit(types.GET_CURRENT_ARTICLE, article)
+          //commit(types.GET_CURRENT_ARTICLE, article)
         }
-        commit(types.DELETE_ARTICLE, index)
+        //commit(types.DELETE_ARTICLE, index)
       }
       return new Promise((resolve, reject) => {
         resolve(res);
@@ -127,15 +127,10 @@ const actions = {
 
 const mutations = {
   [types.CREATE_ARTICLE](state, article) {
-    state.articleList.unshift(article);
     state.currentArticle = article;
   },
   [types.SAVE_ARTICLE](state, { id, article }) {
     state.currentArticle.save = true;
-    const now = state.articleList.find(p => p._id === id)
-    now.title = article.title;
-    now.content = article.content;
-    now.lastEditTime = article.lastEditTime;
   },
   [types.PUBLISH_ARTICLE](state, id) {
     state.currentArticle.publish = true;
@@ -155,16 +150,7 @@ const mutations = {
     state.currentArticle.save = false;
   },
   [types.DELETE_ARTICLE](state, index) {
-    state.articleList.splice(index, 1)
-    if (state.articleList === 0) {
-      return;
-    }
-    if (index > state.articleList.length - 1) {
-      index = state.articleList.length -1
-    }
-    state.currentArticle = state.articleList(index);
-    state.currentArticle.index = index;
-    state.currentArticle.save = true;
+
   }
 }
 

@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import moment from 'moment';
+moment.locale('zh-cn');
 const Schema = mongoose.Schema;
 const articleScheme = new Schema({
   title: String,
@@ -16,4 +18,10 @@ const articleScheme = new Schema({
     default: Date.now
   }
 });
+
+articleScheme.set('toJSON', { getters: true, virtuals: true });
+articleScheme.set('toObject', { getters: true, virtuals: true });
+articleScheme.path('createTime').get((v) => moment(v).format('YYYY-MM-DD HH:mm:ss'));
+articleScheme.path('lastEditTime').get((v) => moment(v).format('YYYY-MM-DD HH:mm:ss'));
+
 module.exports = mongoose.model('article', articleScheme);

@@ -1,12 +1,14 @@
 <template>
-  <div>
+  <div class="editor-box">
     <input type="text" placeholder="文章标题" v-model="articleTitle" />
     <textarea id="editor"></textarea>
-    <button @click="createArticle" v-if="currentArticle._id === -1">创建</button>
+    <button @click="create" v-if="currentArticle._id === -1">创建</button>
     <button @click="saveArticle" v-else>保存</button>
-    <button @click="publishArticle" v-if="!currentArticle.publish">发布</button>
-    <button @click="notPublishArticle" v-else>撤回发布</button>
-    <button @click="deleteArticle" v-if="currentArticle._id !== -1">删除</button>
+    <template v-if="currentArticle._id !== -1">
+      <button @click="publishArticle" v-if="!currentArticle.publish">发布</button>
+      <button @click="notPublishArticle" v-else>撤回发布</button>
+    </template>
+    <button @click="deleteArticle">删除</button>
   </div>
 </template>
 <script>
@@ -52,33 +54,52 @@
           return;
         }
         if (this.currentArticle.save) {
-          this.$store.dispatch('changeArticle')
+          this.changeArticle();
+          if (this.currentArticle._id !== -1) {
+            //this.saveArticle();
+          }
         }
         this.articleContent = value;
       })
     },
     methods: {
-       createArticle() {
+      ...mapActions([
+        'getAllArticles',
+        'getCurrentArticle',
+        'createArticle',
+        'changeArticle'
+      ]),
+       create() {
+         let abstract;
+         if (this.articleContent.indexOf('<!--more-->') !== -1) {
+           abstract = this.articleContent.split('<!--more-->')[0];
+         } else {
+           this.$message.error('请填写摘要');
+           return;
+         }
         const info = {
           title: this.articleTitle,
           content: this.articleContent,
-          publish: false
+          publish: false,
+          abstract: abstract
         }
-        this.$store.dispatch('createArticle', info).then((res) => {
+        this.createArticle(info).then((res) => {
           if (res.data.success) {
             this.$message({
               message: '保存成功',
               type: 'success'
             });
           }
-        }).catch((err, res) => {
+        })
+        .then(() => this.getAllArticles())
+        .catch((err, res) => {
           this.$message.error(err.response.data);
         });
       },
       saveArticle() {
         let abstract;
-        if (this.currentArticle.content.indexOf('<!--more-->') !== -1) {
-          abstract = this.currentArticle.content.split('<!--more-->')[0];
+        if (this.articleContent.indexOf('<!--more-->') !== -1) {
+          abstract = this.articleContent.split('<!--more-->')[0];
         } else {
           this.$message.error('请填写摘要');
           return;
@@ -99,7 +120,9 @@
               type: 'success'
             });
           }
-        }).catch(err => {
+        })
+        .then(() => this.getAllArticles())
+        .catch(err => {
           this.$message.error(err.response.data.error);
         })
       },
@@ -132,18 +155,33 @@
         })
       },
       deleteArticle() {
-        this.$store.dispatch('deleteArticle', {
-          id: this.currentArticle._id,
-          index: this.currentArticle.index
-        }).then(res => {
-          if (res.data.success) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            });
+        this.$confirm('此操作将永久删除文章，是否继续？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(() => {
+          if (this.currentArticle._id === -1) {
+            this.getCurrentArticle(0)
+            return;
           }
-        }).catch(err => {
-          this.$message.error(err.response.data.error);
+          this.$store.dispatch('deleteArticle', {
+            id: this.currentArticle._id,
+            index: this.currentArticle.index
+          }).then(res => {
+            if (res.data.success) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+            }
+          })
+          .then(() => this.getAllArticles())
+          .then(() => {
+            if (this.currentArticle.index === 0) {
+              this.getCurrentArticle(0);
+            } else {
+              this.getCurrentArticle(this.currentArticle.index - 1);
+            }
+          })
         })
       }
     },
@@ -154,6 +192,15 @@
       },
       title(val) {
         this.articleTitle = val;
+      },
+      ariticleContent(val) {
+
+      },
+      articleTitle(val) {
+        if (this.title !== val && this.currentArticle._id !== -1) {
+          this.changeArticle();
+          //this.saveArticle();
+        }
       }
     }
   }

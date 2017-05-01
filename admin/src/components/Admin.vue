@@ -1,7 +1,11 @@
 <template>
   <div class="admin">
-    <list></list>
-    <editor :content='currentArticle.content' :title="currentArticle.title"></editor>
+    <div class="admin__list">
+      <list></list>
+    </div>
+    <div class="admin__editor">
+      <editor :content='currentArticle.content' :title="currentArticle.title"></editor>
+    </div>
   </div>
 </template>
 <script>
@@ -36,5 +40,11 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
+.admin
+  display flex
+  flex-flow row wrap
+  &__list
+    width 500px
+  &__editor
+    flex 1
 </style>
