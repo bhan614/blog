@@ -26,6 +26,7 @@ Vue.prototype.$message = Message;
 const routes = [
   { path: '/', component: Login, meta: { authPage: true } },
   { path: '/admin', component: Admin },
+  { path: '*', redirect: '/' }
 ]
 
 const router = new VueRouter({
