@@ -10,6 +10,9 @@ const articleScheme = new Schema({
     type: Boolean,
     default: false
   },
+  tags: {
+    type: Array
+  },
   createTime: {
     type: Date
   },

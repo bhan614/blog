@@ -1,7 +1,7 @@
 import Axios from 'axios'
 export default {
-   createArticle(title, content, publish, abstract) {
-    return Axios.post('/api/articles', { title, content, publish, abstract })
+   createArticle(title, content, publish, abstract, tags) {
+    return Axios.post('/api/articles', { title, content, publish, abstract, tags })
   },
   getAllArticles() {
     return Axios.get('/api/articles')

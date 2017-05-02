@@ -8,6 +8,7 @@ async function createArticle(ctx) {
   const title = ctx.request.body.title;
   const content = ctx.request.body.content;
   const abstract = ctx.request.body.abstract;
+  const tags = ctx.request.body.tags;
   const publish = ctx.request.body.publish;
   const createTime = new Date();
   const lastEditTime = new Date();
@@ -20,11 +21,15 @@ async function createArticle(ctx) {
   if (abstract == "") {
     ctx.throw(400, "摘要不能为空")
   }
+  if (tags.length === 0) {
+    ctx.throw(400, "标签不能为空")
+  }
   const article = new Article({
     title,
     content,
     abstract,
     publish,
+    tags,
     createTime,
     lastEditTime
   });
@@ -43,6 +48,7 @@ async function modifyArticle(ctx) {
   const title = ctx.request.body.title;
   const content = ctx.request.body.content;
   const abstract = ctx.request.body.abstract;
+  const tags = ctx.request.body.tags;
   if (title == "") {
     ctx.throw(400, '标题不能为空')
   }

@@ -4,7 +4,7 @@
       <list></list>
     </div>
     <div class="admin__editor">
-      <editor :content='currentArticle.content' :title="currentArticle.title"></editor>
+      <editor :content='currentArticle.content' :title="currentArticle.title" :tags="currentArticle.tags"></editor>
     </div>
   </div>
 </template>

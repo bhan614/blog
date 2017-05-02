@@ -1,5 +1,6 @@
 import * as types from '../mutation-types';
 import api from '../../api/article.js';
+import tagApi from '../../api/tag.js';
 
 const state = {
   articleList: [],
@@ -8,6 +9,7 @@ const state = {
     index: -1,
     title: '',
     content: '<!--more-->',
+    tags: [],
     save: true,
     publish: false
   }
@@ -21,8 +23,8 @@ const getters = {
 }
 
 const actions = {
-  createArticle({ commit, state }, { title, content, publish }) {
-    return api.createArticle(title, content, publish).then(res => {
+  createArticle({ commit, state }, { title, content, publish, tags }) {
+    return api.createArticle(title, content, publish, tags).then(res => {
       if (res.data.success) {
         const article = {
           save: true
@@ -83,16 +85,17 @@ const actions = {
         index: -1,
         title: "",
         content: '<!--more-->',
+        tags:[],
         save: true,
         publish: false,
       }
     }  else {
-      console.log(state.articleList, index)
       article = {
         _id: state.articleList[index]._id,
         index: index,
         title: state.articleList[index].title,
         content: state.articleList[index].content,
+        tags: state.articleList[index].tags,
         save: true,
         publish: state.articleList[index].publish,
       }
