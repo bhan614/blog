@@ -22,7 +22,7 @@
 
 ### mongodb
 - 数据库使用mongodb
-- 启动命令mongod  --dbpath d:\mongodb\data
+- 启动命令mongod  --dbpath g:\mongodb\data
 >学习测试代码server/mongodb-test.js
 
 ### token

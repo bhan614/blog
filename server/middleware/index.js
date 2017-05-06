@@ -1,5 +1,5 @@
 import logger from 'koa-logger';
-import bodyParser from 'koa-bodyParser';
+import bodyParser from 'koa-bodyparser';
 import convert from 'koa-convert';
 import onerror from 'koa-onerror';
 

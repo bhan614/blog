@@ -2,18 +2,19 @@
   <div class="editor-box">
     <input type="text" placeholder="文章标题" v-model="articleTitle" />
     <ul>
-      <li v-for="(tag, index) in articleTags">{{ tag }}<spam @click="deleteCurrentTag(index)">&nbsp;&nbsp;&nbsp;X</spam>
+      <li v-for="(tag, index) in articleTags">{{ tag }}<span @click="deleteCurrentTag(index)">&nbsp;&nbsp;&nbsp;X</span>
       </li>
     </ul>
     <input type="text" placeholder="回车添加文章标签" v-model="articleTag" @keyup.enter="AddTag" />
     <textarea id="editor"></textarea>
-    <button @click="create" v-if="currentArticle._id === -1">创建</button>
+    <button @click="create" v-if="currentArticle.id === -1">创建</button>
     <button @click="saveArticle" v-else>保存</button>
-    <template v-if="currentArticle._id !== -1">
+    <template v-if="currentArticle.id !== -1">
       <button @click="publishArticle" v-if="!currentArticle.publish">发布</button>
       <button @click="notPublishArticle" v-else>撤回发布</button>
     </template>
     <button @click="deleteArticle">删除</button>
+    {{ allTags }}
   </div>
 </template>
 <script>
@@ -35,7 +36,8 @@
     },
     computed: {
       ...mapGetters([
-        'currentArticle'
+        'currentArticle',
+        'allTags'
       ]),
     },
     props: {
@@ -65,7 +67,7 @@
         }
         if (this.currentArticle.save) {
           this.changeArticle();
-          if (this.currentArticle._id !== -1) {
+          if (this.currentArticle.id !== -1) {
             //this.saveArticle();
           }
         }
@@ -124,7 +126,7 @@
           lastEditTime: new Date()
         }
         this.$store.dispatch('saveArticle', {
-          id: this.currentArticle._id,
+          id: this.currentArticle.id,
           article
         }).then(res => {
           if (res.data.success) {
@@ -141,7 +143,7 @@
       },
       publishArticle() {
         this.$store.dispatch('publishArticle', {
-          id: this.currentArticle._id
+          id: this.currentArticle.id
         }).then(res => {
           if (res.data.success) {
             this.$message({
@@ -155,7 +157,7 @@
       },
       notPublishArticle() {
         this.$store.dispatch('notPublishArticle', {
-          id: this.currentArticle._id
+          id: this.currentArticle.id
         }).then(res => {
           if (res.data.success) {
             this.$message({
@@ -172,12 +174,12 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(() => {
-          if (this.currentArticle._id === -1) {
+          if (this.currentArticle.id === -1) {
             this.getCurrentArticle(0)
             return;
           }
           this.$store.dispatch('deleteArticle', {
-            id: this.currentArticle._id,
+            id: this.currentArticle.id,
             index: this.currentArticle.index
           }).then(res => {
             if (res.data.success) {
@@ -224,7 +226,7 @@
 
       },
       articleTitle(val) {
-        if (this.title !== val && this.currentArticle._id !== -1) {
+        if (this.title !== val && this.currentArticle.id !== -1) {
           this.changeArticle();
           //this.saveArticle();
         }

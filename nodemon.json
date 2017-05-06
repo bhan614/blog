@@ -9,7 +9,8 @@
      "js": "node --harmony"
    },
    "watch": [
-     "server"
+     "server",
+     "webpack.config.js"
    ],
    "env": {
      "NODE_ENV": "development"

@@ -1,11 +1,10 @@
 import * as types from '../mutation-types';
 import api from '../../api/article.js';
-import tagApi from '../../api/tag.js';
 
 const state = {
   articleList: [],
   currentArticle: {
-    _id: -1,
+    id: -1,
     index: -1,
     title: '',
     content: '<!--more-->',
@@ -19,7 +18,20 @@ const getters = {
   articleList: state => state.articleList.sort((a, b) => {
     return new Date(a.createTime) - new Date(b.createTime);
   }),
-  currentArticle: state => state.currentArticle
+  currentArticle: state => state.currentArticle,
+  allTags: state => {
+    const map = {};
+    let result = [];
+    for (var i = 0; i < state.articleList.length; i++) {
+      const tag = state.articleList[i].tags;
+      if (tag.length !== 0 && !map[tag]) {
+        map[tag] = true;
+        result = result.concat(tag);
+      }
+    }
+    console.log(result);
+    return result;
+  }
 }
 
 const actions = {
@@ -81,7 +93,7 @@ const actions = {
     let article;
     if (state.articleList.length == 0 || index == -1) {
       article = {
-        _id: -1,
+        id: -1,
         index: -1,
         title: "",
         content: '<!--more-->',
@@ -91,7 +103,7 @@ const actions = {
       }
     }  else {
       article = {
-        _id: state.articleList[index]._id,
+        id: state.articleList[index].id,
         index: index,
         title: state.articleList[index].title,
         content: state.articleList[index].content,
@@ -110,7 +122,7 @@ const actions = {
       if (res.data.success) {
         if (state.articleList.length <= 1) {
           let article = {
-            _id: -1,
+            id: -1,
             index: 0,
             title: "",
             content: '',
@@ -137,11 +149,11 @@ const mutations = {
   },
   [types.PUBLISH_ARTICLE](state, id) {
     state.currentArticle.publish = true;
-    state.articleList.find(p => p._id === id).publish = true;
+    state.articleList.find(p => p.id === id).publish = true;
   },
   [types.NOT_PUBLISH_ARTICLE](state, id) {
     state.currentArticle.publish = false;
-    state.articleList.find(p => p._id === id).publish = false;
+    state.articleList.find(p => p.id === id).publish = false;
   },
   [types.GET_ALL_ARTICLES](state, articleList) {
     state.articleList = articleList;
