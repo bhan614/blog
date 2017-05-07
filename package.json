@@ -6,8 +6,9 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon server/start.js",
-    "admin-dev": "node client/build/dev-server.js",
-    "admin-build": "node client/build/build.js"
+    "clean": "rimraf client/dist",
+    "build:prod": "set NODE_ENV=production && npm run clean && webpack --config webpack.config.js --colors --profile",
+    "start:prod": "set NODE_ENV=production && node server/start.js"
   },
   "dependencies": {
     "axios": "^0.16.1",

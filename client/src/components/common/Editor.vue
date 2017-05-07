@@ -14,7 +14,6 @@
       <button @click="notPublishArticle" v-else>撤回发布</button>
     </template>
     <button @click="deleteArticle">删除</button>
-    {{ allTags }}
   </div>
 </template>
 <script>

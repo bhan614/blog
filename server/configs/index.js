@@ -5,7 +5,7 @@ let config = {
     baseApi: '/api',
   },
   mongodb: {
-    url: 'mongodb://localhost:27017/vue-blog',
+    url: 'mongodb://localhost/vue-blog',
     opts: {
       user: '',
       pass: ''

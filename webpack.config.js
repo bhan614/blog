@@ -7,8 +7,6 @@ const SERVER_FOLDER = resolve(__dirname, 'server');
 const productionEnv = process.env.NODE_ENV === 'production' ? true : false;
 
 
-
-
 let config = {
   devtool: 'cheap-module-eval-source-map',
   entry: {

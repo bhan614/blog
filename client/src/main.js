@@ -10,6 +10,7 @@ import './style/main.styl';
 import App from './App';
 import Login from './components/Login.vue';
 import Admin from './components/Admin.vue';
+import Article from './components/Article.vue';
 
 import store from './store';
 
@@ -24,8 +25,9 @@ Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$message = Message;
 
 const routes = [
-  { path: '/', component: Login, meta: { authPage: true } },
+  { path: '/admin/login', component: Login, meta: { authPage: true } },
   { path: '/admin', component: Admin },
+  { path: '/article', component: Article },
   { path: '*', redirect: '/admin' }
 ]
 
@@ -50,7 +52,7 @@ router.beforeEach((to, from, next) => {
        next()
      } else {
        console.log('没有token')
-       next('/')
+       next('/admin/login')
      }
    }
  });
